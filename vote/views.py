@@ -57,3 +57,10 @@ def results(request):
 		'Valeurs' : Vote.objects.filter(already_used=True).values_list('value', flat=True).distinct(),
 	}
 	return render(request, 'vote/results.html', { 'dashboard': dashboard })
+
+@login_required
+def list_codes(request):
+	codes = []
+	for vote in Vote.objects.filter(already_used=False) :
+		codes += vote.code
+	return render(request, 'list.html', { 'object_list': codes })

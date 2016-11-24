@@ -19,4 +19,4 @@ class Vote(models.Model):
 	stamp = models.DateTimeField(auto_now=True, null=True)
 
 	def __str__(self):
-		return '{}		{}'.format(self.code, self.value)
+		return str(self.code)
