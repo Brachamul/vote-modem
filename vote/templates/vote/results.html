@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}{{ block.super }}
+
+<div style="max-width: 480px; margin: auto;">
+
+<br/>
+<h1>Résultats</h1>
+
+<hr/>
+
+{% for key, value in dashboard.items %}
+	<p>
+	{% if value|length %}
+		{{ key }} : <ul>{% for potato in value %}<li>{{ potato }}</li>{% endfor %}</ul>
+	{% else %}
+		{{ key }} : {{ value }}
+	{% endif%}
+	</p>
+	<hr/>
+{% endfor %}
+
+
+
+
+
+</div>
+
+{% endblock content %}
