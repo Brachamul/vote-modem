@@ -52,9 +52,16 @@ def vote(request, code=False):
 
 @login_required
 def results(request):
+	total_number_of_votes = Vote.objects.filter(already_used=True).count()
+	values = Vote.objects.filter(already_used=True).values_list('value', flat=True).distinct()
+	results = []
+	for value in values :
+		number = Vote.objects.filter(value=value).count()
+		percentage = (number/total_number_of_votes)*100
+		results.append('{} : {}% ({} votes)'.format(value, percentage, number))
 	dashboard = {
-		'Nombre de votants': Vote.objects.filter(already_used=True).count(),
-		'Valeurs' : Vote.objects.filter(already_used=True).values_list('value', flat=True).distinct(),
+		'Nombre de votants': total_number_of_votes,
+		'Resultats' : results,
 	}
 	return render(request, 'vote/results.html', { 'dashboard': dashboard })
 
