@@ -123,7 +123,7 @@ STATICFILES_DIRS = (
 )
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/arriere-boutique/'
+LOGIN_REDIRECT_URL = '/vote/results/'
 
 from django.contrib import messages
 MESSAGE_TAGS = { messages.ERROR: 'danger' }
