@@ -15,15 +15,14 @@
 	<p>
 	{% if value|length %}
 		{{ key }} : <ul>{% for potato in value %}<li>{{ potato }}</li>{% endfor %}</ul>
-	{% else %}
+	{% elif value %}
 		{{ key }} : {{ value }}
-	{% endif%}
+	{% else %}
+		{{ key }} : -
+	{% endif %}
 	</p>
 	<hr/>
 {% endfor %}
-
-
-
 
 
 </div>

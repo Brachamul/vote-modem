@@ -62,5 +62,5 @@ def results(request):
 def list_codes(request):
 	codes = []
 	for vote in Vote.objects.filter(already_used=False) :
-		codes += vote.code
-	return render(request, 'list.html', { 'object_list': codes })
+		codes.append(vote.code)
+	return render(request, 'vote/list_codes.html', { 'page_title' : 'Liste des codes encore utilisables', 'codes': codes })

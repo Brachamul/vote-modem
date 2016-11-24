@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}{{ block.super }}
+
+<div style="max-width: 640px; margin: auto; text-align: center;">
+
+<br/>
+<h1>{{ page_title }}</h1>
+
+<hr/>
+
+<table style="font-family: monospace; margin: auto;">
+{% for code in codes %}
+	<tr><td>{{ code}}</td></tr>
+{% endfor %}
+</table>
+
+</div>
+
+{% endblock content %}
