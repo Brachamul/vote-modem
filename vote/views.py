@@ -33,7 +33,7 @@ def vote(request, code=False):
 	min_datetime = datetime.datetime(2016,11,26,9)
 	now_datetime = datetime.datetime.now()
 	max_datetime = datetime.datetime(2016,11,27,15)
-	if min_datetime > now_datetime > max_datetime :
+	if min_datetime < now_datetime < max_datetime :
 		if code :
 			try : vote = Vote.objects.get(code=code)
 			except ObjectDoesNotExist :
