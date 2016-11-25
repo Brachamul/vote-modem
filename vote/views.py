@@ -30,24 +30,30 @@ def say(something):
 
 def vote(request, code=False):
 	display_vote_form = False
-	if code :
-		try : vote = Vote.objects.get(code=code)
-		except ObjectDoesNotExist :
-			messages.error(request, "Ce lien n'est plus actif.")
-		else :
-			if request.method == "POST":
-				if vote.already_used :
-					messages.error(request, "Ce lien a déjà été utilisé pour voter.")
-				else : 
-					vote.value = request.POST.get('vote')
-					vote.already_used = True
-					vote.save()
-					messages.success(request, "Votre vote a bien été pris en compte !")
+	min_datetime = datetime.datetime(2016,11,26,9)
+	now_datetime = datetime.datetime.now()
+	max_datetime = datetime.datetime(2016,11,27,15)
+	if min_datetime > now_datetime > max_datetime :
+		if code :
+			try : vote = Vote.objects.get(code=code)
+			except ObjectDoesNotExist :
+				messages.error(request, "Ce lien n'est plus actif.")
 			else :
-				if vote.already_used :
-					messages.info(request, "Votre vote a déjà été pris en compte !")
+				if request.method == "POST":
+					if vote.already_used :
+						messages.error(request, "Ce lien a déjà été utilisé pour voter.")
+					else : 
+						vote.value = request.POST.get('vote')
+						vote.already_used = True
+						vote.save()
+						messages.success(request, "Votre vote a bien été pris en compte !")
 				else :
-					display_vote_form = True
+					if vote.already_used :
+						messages.info(request, "Votre vote a déjà été pris en compte !")
+					else :
+						display_vote_form = True
+	else :
+		messages.error(request, "Le vote n'est pas encore ouvert !")
 	return render(request, 'vote/vote.html', { 'display_vote_form': display_vote_form })
 
 @login_required
