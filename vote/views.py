@@ -56,6 +56,12 @@ def vote(request, code=False):
 		messages.error(request, "Le vote n'est pas encore ouvert !")
 	return render(request, 'vote/vote.html', { 'display_vote_form': display_vote_form })
 
+def insert_code(request):
+	if request.method == "POST":
+		return redirect('vote_with_code', request.POST.get('code'))
+	else :
+		return render(request, 'vote/insert_code.html')
+
 @login_required
 def results(request):
 	total_number_of_votes = Vote.objects.filter(already_used=True).count()

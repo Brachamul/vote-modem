@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}{{ block.super }}
+
+<div style="max-width: 480px; margin: auto;">
+<br/>
+
+<h1>Election MoDem</h1>
+<h3>Région Centre Val-de-Loire</h3>
+
+<hr/>
+
+<form action="" method="POST">
+
+	{% csrf_token %}
+	<div class="form-group">
+		<label for="code-input">Entrez votre code :</label>
+		<input id="code-input" class="form-control" placeholder="" name="code">
+	</div>
+	<button class="btn btn-block btn-primary">Accéder au vote</button>
+
+</form>
+
+{% endblock content %}
