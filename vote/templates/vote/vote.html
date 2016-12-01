@@ -10,11 +10,11 @@
 {% if display_vote_form %}
 
 <h1>Election MoDem</h1>
-<h3>Région Centre Val-de-Loire</h3>
+<h3>{{ election.name }}</h3>
 
 <hr/>
 
-<p>La liste unique candidate est celle menée par Franck Piffault. Vous pouvez retrouver ici sa <a target="_blank" href="{% get_static_prefix %}Maq%20PF%20BD.pdf">profession de foi</a>.</p>
+<p>{{ election.description|safe }}</p>
 
 <hr/>
 

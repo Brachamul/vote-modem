@@ -28,12 +28,11 @@ def say(something):
 
 
 
-def vote(request, code=False):
+def vote(request, election, code=False):
+	election = get_object_or_404(Election, slug=election)
 	display_vote_form = False
-	min_datetime = datetime(2016,11,26,9)
-	now_datetime = datetime.now()
-	max_datetime = datetime(2016,11,27,15)
-	if min_datetime < now_datetime < max_datetime :
+	now_datetime = datetime.now() + timedelta(hours=1) # time difference with uk
+	if election.start < now_datetime < election.end :
 		if code :
 			try : vote = Vote.objects.get(code=code)
 			except ObjectDoesNotExist :
@@ -54,32 +53,29 @@ def vote(request, code=False):
 						display_vote_form = True
 	else :
 		messages.error(request, "Le vote n'est pas encore ouvert !")
-	return render(request, 'vote/vote.html', { 'display_vote_form': display_vote_form })
+	return render(request, 'vote/vote.html', { 'election': election, 'display_vote_form': display_vote_form })
 
-def insert_code(request):
-	if request.method == "POST":
-		return redirect('vote_with_code', request.POST.get('code'))
-	else :
-		return render(request, 'vote/insert_code.html')
+
 
 @login_required
-def results(request):
-	total_number_of_votes = Vote.objects.filter(already_used=True).count()
-	values = Vote.objects.filter(already_used=True).values_list('value', flat=True).distinct()
+def results(request, election):
+	election = get_object_or_404(Election, slug=election)
+	total_number_of_votes = Vote.objects.filter(election=election, already_used=True).count()
+	values = Vote.objects.filter(election=election, already_used=True).values_list('value', flat=True).distinct()
 	results = []
 	for value in values :
-		number = Vote.objects.filter(value=value).count()
+		number = Vote.objects.filter(election=election, value=value).count()
 		percentage = (number/total_number_of_votes)*100
 		results.append('{} : {}% ({} votes)'.format(value, percentage, number))
 	dashboard = {
 		'Nombre de votants': total_number_of_votes,
 		'Resultats' : results,
 	}
-	return render(request, 'vote/results.html', { 'dashboard': dashboard })
+	return render(request, 'vote/results.html', { 'election': election, 'dashboard': dashboard })
 
 @login_required
-def list_codes(request):
+def list_codes(request, election):
 	codes = []
-	for vote in Vote.objects.filter(already_used=False) :
+	for vote in Vote.objects.filter(election=election, already_used=False) :
 		codes.append(vote.code)
-	return render(request, 'vote/list_codes.html', { 'page_title' : 'Liste des codes encore utilisables', 'codes': codes })
+	return render(request, 'vote/list_codes.html', { 'page_title' : 'Liste des codes encore utilisables', 'election': election, 'codes': codes })
