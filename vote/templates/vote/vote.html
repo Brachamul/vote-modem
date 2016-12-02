@@ -22,18 +22,16 @@
 {% csrf_token %}
 
 	<fieldset class="form-group">
-		<div class="form-check">
-		<label class="form-check-label">
-				<input type="radio" class="form-check-input" name="vote" id="optionsRadios1" value="franck-piffault">
-				Je vote pour la liste menée par Franck Piffault
-			</label>
-		</div>
+
+	{% for option in election.options %}
 		<div class="form-check">
 			<label class="form-check-label">
-				<input type="radio" class="form-check-input" name="vote" id="optionsRadios2" value="blanc">
-				Je vote blanc
+				<input type="radio" class="form-check-input" name="vote" value="{{ option.slug }}">
+				{{ option.text }}
 			</label>
 		</div>
+	{% endfor %}
+
 	</fieldset>
 
 	<button class="btn btn-block btn-primary">J'enregistre mon vote</button>
@@ -47,7 +45,8 @@
 <hr/>
 
 <small>
-<p>Le vote est ouvert de samedi 10h à dimanche 16h.</p>
+<p>Ouverture du vote : {{ election.start|date:"l j F à H\hi" }}<br/>
+Clôture : {{ election.end|date:"l j F à H\hi" }}</p>
 <p>En cas de problème, contactez-nous :<br/>- Par téléphone : 01 53 59 20 78<br/>- Par email : secretariat-general@lesdemocrates.fr</p>
 </small>
 

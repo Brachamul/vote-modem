@@ -64,9 +64,10 @@ def results(request, election):
 	values = Vote.objects.filter(election=election, already_used=True).values_list('value', flat=True).distinct()
 	results = []
 	for value in values :
+		option = election.option_name(value)
 		number = Vote.objects.filter(election=election, value=value).count()
 		percentage = (number/total_number_of_votes)*100
-		results.append('{} : {}% ({} votes)'.format(value, percentage, number))
+		results.append('{} : {}% ({} votes)'.format(option, round(percentage, 2), number))
 	dashboard = {
 		'Nombre de votants': total_number_of_votes,
 		'Resultats' : results,
