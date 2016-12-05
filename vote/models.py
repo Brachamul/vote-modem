@@ -19,6 +19,7 @@ class Election(models.Model):
 	end = models.DateTimeField()
 	description = models.TextField(max_length=5000)
 	choices = models.CharField(max_length=1024)
+	number_of_voters = models.IntegerField()
 	# [{"text": "Alain Juppé", "slug": "alain-juppe"}, {"text": "François Fillon", "slug": "francois-fillon"}]
 
 	def options(self): 
@@ -31,6 +32,22 @@ class Election(models.Model):
 				return option['text']
 		return slug
 
+	def save(self, *args, **kwargs):
+		number_of_codes = Vote.objects.filter(election=self).count()
+		number_of_codes_required = self.number_of_voters - number_of_codes
+		if number_of_codes_required < 0 :
+			# there are two many codes, must delete some !
+			# just fyi, there is a verification step to make sure one does not do anything stupid
+			# see the forms.py entry for Election
+			number_of_extra_codes = -number_of_codes_required
+			Vote.objects.filter(election=self, already_used=False).delete() # delete all unused codes
+			number_of_used_codes = Vote.objects.filter(election=self, already_used=True).count()
+			number_of_codes_required = self.number_of_voters - number_of_used_codes # regenerate codes
+		if number_of_codes_required > 0 :
+			# there aren't enough codes, must create more !
+			Vote.objects.bulk_create([Vote(election=self) for i in range(number_of_codes_required)])
+		super(Election, self).save(*args, **kwargs)
+
 	def __str__(self):
 		return str(self.name)
 
@@ -42,7 +59,7 @@ class Election(models.Model):
 
 class Vote(models.Model):
 
-	election = models.ForeignKey(Election)
+	election = models.ForeignKey(Election, on_delete=models.CASCADE)
 	code = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	value = models.CharField(max_length=255, blank=True, null=True)
 	already_used = models.BooleanField(default=False)
@@ -50,6 +67,3 @@ class Vote(models.Model):
 
 	def __str__(self):
 		return str(self.code)
-
-
-
