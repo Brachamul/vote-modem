@@ -21,18 +21,36 @@ from .forms import *
 
 
 
-def say(something):
+def say(something): # i'm giving up on you
 	print("======================")
 	print(something)
 	print("======================")
 
 
+def now():
+	# time difference with pythonanywhere uk servers
+	return datetime.now() + timedelta(hours=1)
+
+def expired_elections():
+	return Election.objects.filter(end__lt=now()).exclude(end__lt=now()-timedelta(days=1))
+
+def current_elections():
+	return Election.objects.filter(start__lt=now(), end__gt=now())
+
+def upcoming_elections():
+	return Election.objects.filter(start__gt=now())
+
+
+def welcome(request):
+	return render(request, 'vote/welcome.html', {
+		'expired_elections':  expired_elections(),
+		'current_elections': current_elections(),
+		'upcoming_elections': upcoming_elections(),
+		})
 
 def vote(request, election, code=False):
 	election = get_object_or_404(Election, slug=election)
-	display_vote_form = False
-	now_datetime = datetime.now() + timedelta(hours=1) # time difference with uk
-	if election.start < now_datetime < election.end :
+	if election in current_elections() :
 		if code :
 			try : vote = Vote.objects.get(code=code)
 			except ObjectDoesNotExist :
@@ -50,10 +68,14 @@ def vote(request, election, code=False):
 					if vote.already_used :
 						messages.info(request, "Votre vote a déjà été pris en compte !")
 					else :
-						display_vote_form = True
-	else :
-		messages.error(request, "Le vote n'est pas encore ouvert !")
-	return render(request, 'vote/vote.html', { 'election': election, 'display_vote_form': display_vote_form })
+						return render(request, 'vote/vote.html', { 'election': election, 'display_vote_form': True })
+		else :
+			messages.info(request, "Pour voter, cliquez sur le lien inclus dans votre email de convocation au vote.")
+	elif election in upcoming_elections():
+		messages.info(request, "Le vote n'est pas encore ouvert !")
+	elif election in expired_elections():
+		messages.error(request, "Le vote est désormais clos.")
+	return render(request, 'vote/vote.html', { 'election': election, 'display_vote_form': False })
 
 
 
@@ -76,7 +98,8 @@ def results(request, election):
 
 @login_required
 def list_codes(request, election):
+	election = get_object_or_404(Election, slug=election)
 	codes = []
-	for vote in Vote.objects.filter(election=election, already_used=False) :
+	for vote in Vote.objects.filter(election=election, already_used=False):
 		codes.append(vote.code)
 	return render(request, 'vote/list_codes.html', { 'page_title' : 'Liste des codes encore utilisables', 'election': election, 'codes': codes })

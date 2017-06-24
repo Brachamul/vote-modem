@@ -9,32 +9,54 @@
 
 {% block head %}{{ block.super }}
 
+<style>
+	body { max-width: 640px; padding: 0 20px; margin: auto; background-color: #fafafa; }
+	footer { text-style: italic; opacity: .7; font-size: .8em; }
+</style>
+
 {% endblock head %}
 
 
 
-{% block header %}
-	{% include "header.html" %}
-{% endblock header %}
+	{% block header %}
+		{% include "header.html" %}
+	{% endblock header %}
+	
+	
+	
+	{% block content %}
+	
+		<!-- Main content displayed here -->
+	
+	{% endblock content %}
+	
+	
+	
+	{% block footer %}
+		<hr/>
+		<p>
+			Plateforme mise à disposition par
+			<a target="_blank" href="http://	m.me/antoningrele">Antonin Grêlé</a> et les
+			<a target="_blank" href="http://jeunes-democrates.org">Jeunes Démocrates</a>.
+		</p>
+		<p style="margin-bottom: 0;">En cas de problème, contactez-nous :</p>
+		<ul>
+			<li>MoDem |
+				<a href="tel:+33153592078">01 53 59 20 78</a> |
+				<a href="mailto:secretariat-general@lesdemocrates.fr">secretariat-general@lesdemocrates.fr</a>
+			</li>
+			<li>JDem |
+				<a href="mailto:secretariat-general@jeunes-democrates.org">secretariat-general@jeunes-democrates.org</a>
+			</li>
+		</ul>
+	{% endblock footer %}
 
 
-
-{% block content %}
-
-	<!-- Main content displayed here -->
-
-{% endblock content %}
-
-
-
-{% block footer %}
-
-{% endblock footer %}
 
 
 
 {% block scripts %} {{ block.super }}
 
-{% comment %} <script src="{% get_static_prefix %}js/notifications.js"></script> {% endcomment %} 
+{% comment %} <script src="{% get_static_prefix %}js/notifications.js"></script> {% endcomment %}
 
 {% endblock scripts %}

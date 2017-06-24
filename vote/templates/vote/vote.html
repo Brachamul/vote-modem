@@ -4,13 +4,13 @@
 
 {% block content %}{{ block.super }}
 
-<div style="max-width: 480px; margin: auto;">
-<br/>
+<h3>{{ election.name }}</h3>
+
+<small>
+	Vote ouvert du {{ election.start|date:"l j F à H\hi" }} au {{ election.end|date:"l j F à H\hi" }}.
+</small>
 
 {% if display_vote_form %}
-
-<h1>Election MoDem</h1>
-<h3>{{ election.name }}</h3>
 
 <hr/>
 
@@ -38,18 +38,6 @@
 
 </form>
 
-{% else %}
-<p>Cette page n'est accessible que par le lien inclus dans les emails de convocation au vote.</p>
-
 {% endif %}
-<hr/>
-
-<small>
-<p>Ouverture du vote : {{ election.start|date:"l j F à H\hi" }}<br/>
-Clôture : {{ election.end|date:"l j F à H\hi" }}</p>
-<p>En cas de problème, contactez-nous :<br/>- Par téléphone : 01 53 59 20 78<br/>- Par email : secretariat-general@lesdemocrates.fr</p>
-</small>
-
-</div>
 
 {% endblock content %}

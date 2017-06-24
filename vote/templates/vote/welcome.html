@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}{{ block.super }}
+
+<h4>Votes en cours</h4>
+{% if not current_elections %}
+	<p><i>Il n'y a pas de votes en cours en ce moment.</i></p>
+{% else %}
+	<ul>
+	{% for election in current_elections %}
+		<li><a href="{% url 'vote_witout_code' election.slug %}">{{ election.name }}</a> <small>(encore ouvert pour {{ election.end|timeuntil }})</li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
+{% if upcoming_elections %}
+	<hr/>
+	<h4>Prochains votes</h4>
+	<ul>
+	{% for election in upcoming_elections %}
+		<li>{{ election.name }} <small>(ouvre le {{ election.start|date:"l j F à H\hi" }})</small></li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
+{% if expired_elections %}
+	<hr/>
+	<h4>Votes clôturés récemment</h4>
+	<ul>
+	{% for election in expired_elections %}
+		<li>{{ election.name }} <small> (clôturé il y a {{ election.end|timesince }})</small></li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
+{% endblock content %}

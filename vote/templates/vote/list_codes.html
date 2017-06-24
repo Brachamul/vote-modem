@@ -4,14 +4,14 @@
 
 {% block content %}{{ block.super }}
 
-<div style="max-width: 640px; margin: auto; text-align: center;">
-
-<br/>
-<h1>{{ page_title }}</h1>
+<h3>
+	Liste des codes encore utilisables<br/>
+	<span style="font-style: italic; font-size: .5em;">{{ election.name }}</span>
+</h3>
 
 <hr/>
 
-<table style="font-family: monospace; margin: auto;">
+<table style="font-family: monospace;">
 {% for code in codes %}
 	<tr><td>{{ code}}</td></tr>
 {% endfor %}

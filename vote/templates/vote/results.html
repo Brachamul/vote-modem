@@ -4,11 +4,10 @@
 
 {% block content %}{{ block.super }}
 
-<div style="max-width: 480px; margin: auto;">
-
-<br/>
-<h1>Résultats</h1>
-
+<h3>
+	Résultats du vote<br/>
+	<span style="font-style: italic; font-size: .5em;">{{ election.name }}</span>
+</h3>
 <hr/>
 
 {% for key, value in dashboard.items %}
@@ -23,8 +22,5 @@
 	</p>
 	<hr/>
 {% endfor %}
-
-
-</div>
 
 {% endblock content %}

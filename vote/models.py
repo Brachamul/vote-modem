@@ -18,9 +18,8 @@ class Election(models.Model):
 	start = models.DateTimeField()
 	end = models.DateTimeField()
 	description = models.TextField(max_length=5000)
-	choices = models.CharField(max_length=1024)
+	choices = models.CharField(max_length=1024, help_text='[{"text": "Alain Juppé", "slug": "alain-juppe"}, {"text": "François Fillon", "slug": "francois-fillon"}]')
 	number_of_voters = models.IntegerField()
-	# [{"text": "Alain Juppé", "slug": "alain-juppe"}, {"text": "François Fillon", "slug": "francois-fillon"}]
 
 	def options(self): 
 		return json.loads(self.choices)
@@ -33,6 +32,12 @@ class Election(models.Model):
 		return slug
 
 	def save(self, *args, **kwargs):
+		super(Election, self).save(*args, **kwargs)
+		# TODO : this should probably be a signal...
+		# moved all the code after the save, because otherwise we couldn't attach 
+		# the new vote objects to the election, since it didn't exist yet
+		# when an "election" instance is modified, we regenerate codes to make sure
+		# there are enough for everyone, but not too many
 		number_of_codes = Vote.objects.filter(election=self).count()
 		number_of_codes_required = self.number_of_voters - number_of_codes
 		if number_of_codes_required < 0 :
@@ -46,7 +51,7 @@ class Election(models.Model):
 		if number_of_codes_required > 0 :
 			# there aren't enough codes, must create more !
 			Vote.objects.bulk_create([Vote(election=self) for i in range(number_of_codes_required)])
-		super(Election, self).save(*args, **kwargs)
+
 
 	def __str__(self):
 		return str(self.name)
