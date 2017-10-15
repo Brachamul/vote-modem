@@ -21,7 +21,7 @@ from .forms import *
 
 def now():
 	# time difference with pythonanywhere uk servers
-	return datetime.now() + timedelta(hours=1)
+	return datetime.now() + timedelta(hours=settings.SERVER_TIME_DIFFERENCE)
 
 def expired_elections():
 	return Election.objects.filter(end__lt=now()).exclude(end__lt=now()-timedelta(days=1))

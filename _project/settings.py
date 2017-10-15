@@ -129,6 +129,12 @@ from django.contrib import messages
 MESSAGE_TAGS = { messages.ERROR: 'danger' }
 
 
+# Set time difference with server
+# UK is "1" because "now" is always UK time + 1
+# Override in local_settings.py
+SERVER_TIME_DIFFERENCE = 0
+
+
 ##########################
 #  Settings localisables :
 ##########################
