@@ -53,10 +53,9 @@ def vote(request, election, code=False):
 						messages.error(request, "Ce lien a déjà été utilisé pour voter.")
 					else : 
 						if election.max_number_of_choices > 1 :
-							vote.value = request.POST.getlist('vote')
+							vote.value = json.dumps(request.POST.getlist('vote'))
 						else :
 							vote.value = request.POST.get('vote')
-						vote.already_used = True
 						vote.save()
 						messages.success(request, "Votre vote a bien été pris en compte !")
 				else :
@@ -77,16 +76,13 @@ def vote(request, election, code=False):
 @login_required
 def results(request, election):
 	election = get_object_or_404(Election, slug=election)
-	total_number_of_votes = Vote.objects.filter(election=election, already_used=True).count()
-	values = Vote.objects.filter(election=election, already_used=True).values_list('value', flat=True).distinct()
+	number_of_votes, registrar = election.get_results()
 	results = []
-	for value in values :
-		option = election.option_name(value)
-		number = Vote.objects.filter(election=election, value=value).count()
-		percentage = (number/total_number_of_votes)*100
-		results.append('{} : {}% ({} votes)'.format(option, round(percentage, 2), number))
+	for choice, score in registrar.items() :
+		percentage = (score/number_of_votes)*100
+		results.append('{} - {} ({}%)'.format(choice, score, round(percentage, 2)))
 	dashboard = {
-		'Nombre de votants': total_number_of_votes,
+		'Nombre de votants': number_of_votes,
 		'Resultats' : results,
 	}
 	return render(request, 'vote/results.html', { 'election': election, 'dashboard': dashboard })

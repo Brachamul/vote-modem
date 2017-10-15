@@ -54,6 +54,27 @@ class Election(models.Model):
 			# there aren't enough codes, must create more !
 			Vote.objects.bulk_create([Vote(election=self) for i in range(number_of_codes_required)])
 
+	def get_results(self):
+		votes = Vote.objects.filter(election=self, already_used=True)
+		number_of_votes = votes.count()
+		registrar = {}
+		for vote in votes :
+			choices = []
+			try :
+				values = json.loads(vote.value)
+				# multivotes are registered as JSON
+				# so if this check passes, the vote is a multivote
+			except ValueError :
+				# if the test fails, it's a single vote
+				choices.append(vote.value)
+			else :
+				# otherwise, it's a multivote
+				for value in values :
+					choices.append(value)
+			for choice in choices :
+				if choice in registrar : registrar[choice] += 1
+				else : registrar[choice] = 1
+			return (number_of_votes, registrar)
 
 	def __str__(self):
 		return str(self.name)
@@ -71,6 +92,14 @@ class Vote(models.Model):
 	value = models.CharField(max_length=255, blank=True, null=True)
 	already_used = models.BooleanField(default=False)
 	stamp = models.DateTimeField(auto_now=True, null=True)
+
+	def save(self, *args, **kwargs):
+		# Set "already_used" to true when value is set
+		if self.value :
+			self.already_used = True
+		else :
+			self.already_used = False
+		super(Vote, self).save(*args, **kwargs)
 
 	def __str__(self):
 		return str(self.code)
