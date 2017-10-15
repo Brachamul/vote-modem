@@ -26,7 +26,13 @@
 	{% for option in election.options %}
 		<div class="form-check">
 			<label class="form-check-label">
-				<input type="radio" class="form-check-input" name="vote" value="{{ option.slug }}">
+				<input 
+					{% if election.max_number_of_choices > 1 %}
+						type="checkbox"
+					{% else %}
+						type="radio"
+					{% endif %}
+					class="form-check-input" name="vote" value="{{ option.slug }}">
 				{{ option.text }}
 			</label>
 		</div>

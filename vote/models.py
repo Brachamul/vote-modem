@@ -18,7 +18,9 @@ class Election(models.Model):
 	start = models.DateTimeField()
 	end = models.DateTimeField()
 	description = models.TextField(max_length=5000)
-	choices = models.CharField(max_length=1024, help_text='[{"text": "Alain Juppé", "slug": "alain-juppe"}, {"text": "François Fillon", "slug": "francois-fillon"}]')
+	choices = models.CharField(max_length=1024, help_text='\
+		[{"text": "Alain Juppé", "slug": "alain-juppe"}, {"text": "François Fillon", "slug": "francois-fillon"}]')
+	max_number_of_choices = models.PositiveSmallIntegerField(default=1)
 	number_of_voters = models.IntegerField()
 
 	def options(self): 

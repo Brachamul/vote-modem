@@ -14,17 +14,9 @@ from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView
 
-
-
 from .models import *
 from .forms import *
 
-
-
-def say(something): # i'm giving up on you
-	print("======================")
-	print(something)
-	print("======================")
 
 
 def now():
@@ -60,7 +52,10 @@ def vote(request, election, code=False):
 					if vote.already_used :
 						messages.error(request, "Ce lien a déjà été utilisé pour voter.")
 					else : 
-						vote.value = request.POST.get('vote')
+						if election.max_number_of_choices > 1 :
+							vote.value = request.POST.getlist('vote')
+						else :
+							vote.value = request.POST.get('vote')
 						vote.already_used = True
 						vote.save()
 						messages.success(request, "Votre vote a bien été pris en compte !")
