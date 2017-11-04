@@ -80,7 +80,7 @@ def results(request, election):
 	results = []
 	for choice, score in registrar.items() :
 		percentage = (score/number_of_votes)*100
-		results.append('{} - {} ({}%)'.format(choice, score, round(percentage, 2)))
+		results.append('{} - {}% {}'.format(score, round(percentage, 2), choice))
 	dashboard = {
 		'Nombre de votants': number_of_votes,
 		'Resultats' : results,

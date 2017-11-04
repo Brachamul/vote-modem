@@ -74,7 +74,7 @@ class Election(models.Model):
 			for choice in choices :
 				if choice in registrar : registrar[choice] += 1
 				else : registrar[choice] = 1
-			return (number_of_votes, registrar)
+		return (number_of_votes, registrar)
 
 	def __str__(self):
 		return str(self.name)
