@@ -32,7 +32,7 @@
 					{% else %}
 						type="radio"
 					{% endif %}
-					class="form-check-input" name="vote" value="{{ option.slug }}">
+					class="form-check-input" name="vote" value="{{ option.slug }}" {% if option.slug in vote.value %}checked{% endif %}>
 				{{ option.text }}
 			</label>
 		</div>

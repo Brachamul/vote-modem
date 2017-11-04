@@ -49,20 +49,21 @@ def vote(request, election, code=False):
 				messages.error(request, "Ce lien n'est plus actif.")
 			else :
 				if request.method == "POST":
-					if vote.already_used :
-						messages.error(request, "Ce lien a déjà été utilisé pour voter.")
-					else : 
-						if election.max_number_of_choices > 1 :
-							vote.value = json.dumps(request.POST.getlist('vote'))
-						else :
-							vote.value = request.POST.get('vote')
-						vote.save()
-						messages.success(request, "Votre vote a bien été pris en compte !")
+					if election.max_number_of_choices > 1 :
+						vote.value = json.dumps(request.POST.getlist('vote'))
+					else :
+						vote.value = request.POST.get('vote')
+					vote.save()
+					messages.success(request,
+						"Votre vote a bien été pris en compte !<br/>\
+						<a class='small alert-link' style='text-decoration: underline;' href=''>\
+						<i class='fa fa-refresh'></i>\
+						Je veux changer mon vote</a>",
+						extra_tags='safe')
 				else :
 					if vote.already_used :
-						messages.info(request, "Votre vote a déjà été pris en compte !")
-					else :
-						return render(request, 'vote/vote.html', { 'election': election, 'display_vote_form': True })
+						messages.info(request, "Votre vote a déjà été pris en compte, mais vous pouvez le modifier jusqu'à la clôture de l'élection.")
+					return render(request, 'vote/vote.html', { 'election': election, 'vote': vote, 'display_vote_form': True })
 		else :
 			messages.info(request, "Pour voter, cliquez sur le lien inclus dans votre email de convocation au vote.")
 	elif election in upcoming_elections():
